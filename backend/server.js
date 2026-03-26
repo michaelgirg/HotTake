@@ -33,7 +33,7 @@ app.use(passport.session());
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
 // Routes added as subsequent PBIs are completed
-// app.use('/api/auth', require('./routes/auth'));
+app.use('/api/auth', require('./routes/auth'));
 // app.use('/api/titles', require('./routes/titles'));
 
 app.listen(PORT, () => {
