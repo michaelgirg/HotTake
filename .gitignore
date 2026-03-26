@@ -1,0 +1,22 @@
+# Dependencies
+node_modules
+
+# Environment variables
+.env
+
+# SQLite database file
+*.db
+*.db-shm
+*.db-wal
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS clutter
+.DS_Store
+Thumbs.db
+
+# Runtime
+.node_repl_history
