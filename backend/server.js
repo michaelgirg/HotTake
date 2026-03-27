@@ -1,3 +1,4 @@
+require('./config/passport'); // loads strategy & serialize/deserialize
 require('dotenv').config();
 require('./db/database'); // initializes DB & creates tables on startup
 
