@@ -24,6 +24,17 @@ db.exec(`
   );
 `);
 
+// PBI 8: Titles table
+db.exec(`
+  CREATE TABLE IF NOT EXISTS titles (
+    id           INTEGER  PRIMARY KEY AUTOINCREMENT,
+    name         TEXT     NOT NULL,
+    type         TEXT     NOT NULL CHECK(type IN ('Anime', 'Manga', 'Movie')),
+    genre        TEXT     NOT NULL,
+    release_year INTEGER  NOT NULL
+  );
+`);
+
 console.log('Database initialized. Users table ready.');
 
 module.exports = db;
