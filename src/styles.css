@@ -1,0 +1,241 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f0f0f;
+    color: #f0f0f0;
+    min-height: 100vh;
+}
+
+/* ── Auth pages ── */
+.auth-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+.logo {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 24px;
+    color: #ff6b4a;
+}
+
+.auth-card {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 36px;
+    width: 100%;
+    max-width: 420px;
+}
+
+.auth-card h2 {
+    font-size: 1.4rem;
+    margin-bottom: 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    color: #aaa;
+}
+
+.form-group input {
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: #f0f0f0;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+    border-color: #ff6b4a;
+}
+
+.error-message {
+    color: #ff4a4a;
+    font-size: 0.875rem;
+    margin-bottom: 12px;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    background: #ff6b4a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: background 0.2s;
+}
+
+.btn-primary:hover {
+    background: #e85a3a;
+}
+
+.btn-primary:disabled {
+    background: #555;
+    cursor: not-allowed;
+}
+
+.auth-switch {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.875rem;
+    color: #aaa;
+}
+
+.auth-switch a {
+    color: #ff6b4a;
+    text-decoration: none;
+}
+
+.auth-switch a:hover {
+    text-decoration: underline;
+}
+
+/* ── Search page ── */
+.search-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 24px;
+}
+
+.search-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.btn-logout {
+    background: transparent;
+    border: 1px solid #444;
+    color: #aaa;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-logout:hover {
+    border-color: #ff6b4a;
+    color: #ff6b4a;
+}
+
+.search-input {
+    width: 100%;
+    padding: 14px 18px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 10px;
+    color: #f0f0f0;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    border-color: #ff6b4a;
+}
+
+.search-status {
+    color: #888;
+    margin-top: 16px;
+    font-size: 0.9rem;
+}
+
+.search-layout {
+    display: flex;
+    gap: 24px;
+    margin-top: 24px;
+    align-items: flex-start;
+}
+
+.results-list {
+    list-style: none;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.result-item:hover {
+    border-color: #ff6b4a;
+}
+
+.result-item.active {
+    border-color: #ff6b4a;
+    background: #1f1510;
+}
+
+.result-name {
+    font-weight: 500;
+}
+
+.result-type {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.title-detail {
+    width: 260px;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 24px;
+    flex-shrink: 0;
+}
+
+.title-detail h2 {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: #ff6b4a;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+}
+
+.detail-label {
+    color: #888;
+}
+
+.detail-value {
+    font-weight: 500;
+}
