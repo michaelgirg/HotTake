@@ -44,4 +44,27 @@ router.post('/register', (req, res) => {
     });
 });
 
+const passport = require('../config/passport');
+
+// POST /api/auth/login
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+        if (err) return next(err);
+        if (!user) return res.status(401).json({ error: info.message });
+
+        req.logIn(user, (err) => {
+            if (err) return next(err);
+            return res.status(200).json({
+                message: 'Logged in successfully.',
+                user: {
+                    id: user.id,
+                    username: user.username,
+                    email: user.email,
+                    role: user.role
+                }
+            });
+        });
+    })(req, res, next);
+});
+
 module.exports = router;
