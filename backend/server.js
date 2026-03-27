@@ -49,4 +49,6 @@ app.listen(PORT, () => {
     console.log(`HotTake API running on http://localhost:${PORT}`);
 });
 
+app.use('/api/titles', require('./routes/titles'));
+
 module.exports = app;
