@@ -1,4 +1,5 @@
-const API_BASE_URL = 'https://localhost:3001';
+// const API_BASE_URL = 'http://localhost:3001';
+const API_BASE_URL = 'https://hottake-8bpp.onrender.com';
 
 async function handleJsonResponse(response){
     let data = null;
