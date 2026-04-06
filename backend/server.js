@@ -1,5 +1,6 @@
 require('dotenv').config();
 require('./db/database');
+require('./db/seed');
 
 const express = require('express');
 const session = require('express-session');
@@ -11,9 +12,11 @@ const { requireAuth, requireAdmin } = require('./middleware/authMiddleware');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const CLIENT_URL = process.env.CLIENT_URL;
 
+app.set('trust proxy', 1);
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    origin: CLIENT_URL,
     credentials: true
 }));
 app.use(express.json());
@@ -25,6 +28,7 @@ app.use(session({
     cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         maxAge: 1000 * 60 * 60 * 24
     }
 }));
@@ -45,10 +49,10 @@ app.get('/api/admin', requireAdmin, (req, res) => {
 
 app.use('/api/auth', require('./routes/auth'));
 
-app.listen(PORT, () => {
-    console.log(`HotTake API running on http://localhost:${PORT}`);
-});
-
 app.use('/api/titles', require('./routes/titles'));
+
+app.listen(PORT, () => {
+    console.log(`HotTake API running on port ${PORT}`);
+});
 
 module.exports = app;
