@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// const API_BASE_URL = 'http://localhost:3001';
+const API_BASE_URL = 'https://hottake-8bpp.onrender.com';
+
 export default function SearchPage() {
     const navigate = useNavigate();
     const [query, setQuery] = useState('');
@@ -25,7 +28,7 @@ export default function SearchPage() {
             setSelected(null);
             try {
                 const res = await fetch(
-                    `http://localhost:3001/api/titles/search?q=${encodeURIComponent(query)}`,
+                    `${API_BASE_URL}/api/titles/search?q=${encodeURIComponent(query)}`,
                     { credentials: 'include' }
                 );
 
@@ -51,7 +54,7 @@ export default function SearchPage() {
     }, [query]);
 
     const handleLogout = async () => {
-        await fetch('http://localhost:3001/api/auth/logout', {
+        await fetch(`${API_BASE_URL}/api/auth/logout`, {
             method: 'POST',
             credentials: 'include',
         });

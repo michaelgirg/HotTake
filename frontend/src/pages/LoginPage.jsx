@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
+// const API_BASE_URL = 'http://localhost:3001';
+const API_BASE_URL = 'https://hottake-8bpp.onrender.com';
+
 export default function LoginPage() {
     const navigate = useNavigate();
     const [form, setForm] = useState({ email: '', password: '' });
@@ -21,7 +24,7 @@ export default function LoginPage() {
 
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:3001/api/auth/login', {
+            const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
