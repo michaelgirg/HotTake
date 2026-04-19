@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const db = require('../db/database');
 
 // POST /api/auth/register
-router.post('/register', (req, res) => {
+router.post('/register', async (req, res, next) => {
     const { username, email, password } = req.body;
 
     // Input validation
@@ -22,26 +22,37 @@ router.post('/register', (req, res) => {
     }
 
     // Check for duplicate email or username
-    const existing = db.prepare(
-        'SELECT id FROM users WHERE email = ? OR username = ?'
-    ).get(email.toLowerCase(), username);
+    try {
+        const existing = await db.query(
+            'SELECT id FROM users WHERE email = $1 OR lower(username) = lower($2)',
+            [email.toLowerCase(), username]
+        );
 
-    if (existing) {
-        return res.status(409).json({ error: 'Email or username already in use.' });
+        if (existing.rows.length > 0) {
+            return res.status(409).json({ error: 'Email or username already in use.' });
+        }
+
+        const password_hash = bcrypt.hashSync(password, 10);
+
+        const result = await db.query(
+            `
+            INSERT INTO users (username, email, password_hash, display_name)
+            VALUES ($1, $2, $3, $1)
+            RETURNING id
+            `,
+            [username, email.toLowerCase(), password_hash]
+        );
+
+        return res.status(201).json({
+            message: 'User registered successfully.',
+            userId: result.rows[0].id
+        });
+    } catch (err) {
+        if (err.code === '23505') {
+            return res.status(409).json({ error: 'Email or username already in use.' });
+        }
+        return next(err);
     }
-
-    // Hash password and insert
-    const password_hash = bcrypt.hashSync(password, 10);
-
-    const result = db.prepare(`
-    INSERT INTO users (username, email, password_hash)
-    VALUES (?, ?, ?)
-  `).run(username, email.toLowerCase(), password_hash);
-
-    return res.status(201).json({
-        message: 'User registered successfully.',
-        userId: result.lastInsertRowid
-    });
 });
 
 const passport = require('../config/passport');

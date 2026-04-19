@@ -1,5 +1,5 @@
-require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
-const db = require('./database');
+require('dotenv').config();
+const { pool } = require('./database');
 
 const titles = [
     // Anime 
@@ -129,18 +129,41 @@ const titles = [
     { name: 'The Tale of Princess Kaguya', type: 'Movie', genre: 'Fantasy', release_year: 2013 },
     { name: 'When Marnie Was There', type: 'Movie', genre: 'Drama', release_year: 2014 },
     { name: 'Porco Rosso', type: 'Movie', genre: 'Adventure', release_year: 1992 },
+
+    // TV
+    { name: 'Stranger Things', type: 'TV', genre: 'Sci-Fi', release_year: 2016 },
+    { name: 'The Last of Us', type: 'TV', genre: 'Drama', release_year: 2023 },
+    { name: 'Breaking Bad', type: 'TV', genre: 'Drama', release_year: 2008 },
+    { name: 'The Bear', type: 'TV', genre: 'Drama', release_year: 2022 },
+    { name: 'Avatar: The Last Airbender', type: 'TV', genre: 'Adventure', release_year: 2005 },
+    { name: 'Arcane', type: 'TV', genre: 'Fantasy', release_year: 2021 },
+    { name: 'The Mandalorian', type: 'TV', genre: 'Sci-Fi', release_year: 2019 },
+    { name: 'Game of Thrones', type: 'TV', genre: 'Fantasy', release_year: 2011 },
+    { name: 'The Boys', type: 'TV', genre: 'Action', release_year: 2019 },
+    { name: 'Community', type: 'TV', genre: 'Comedy', release_year: 2009 },
 ];
 
-// Wipe existing seed data and re insert cleanly
-const insertTitle = db.prepare(`
-  INSERT INTO titles (name, type, genre, release_year)
-  VALUES (@name, @type, @genre, @release_year)
-`);
+async function seed() {
+    for (const title of titles) {
+        await pool.query(
+            `
+            INSERT INTO titles (name, type, genre, release_year)
+            VALUES ($1, $2, $3, $4)
+            ON CONFLICT (name, type, release_year)
+            DO UPDATE SET genre = EXCLUDED.genre
+            `,
+            [title.name, title.type, title.genre, title.release_year]
+        );
+    }
 
-const seedAll = db.transaction((titles) => {
-    db.prepare('DELETE FROM titles').run();
-    for (const title of titles) insertTitle.run(title);
-});
+    console.log(`Seeded ${titles.length} titles into PostgreSQL.`);
+}
 
-seedAll(titles);
-console.log(` Seeded ${titles.length} titles into the database.`);
+seed()
+    .catch((err) => {
+        console.error('Seed failed:', err);
+        process.exitCode = 1;
+    })
+    .finally(async () => {
+        await pool.end();
+    });
