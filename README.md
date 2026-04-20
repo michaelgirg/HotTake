@@ -13,6 +13,7 @@ The current MVP stores titles locally in PostgreSQL, and can import anime metada
 - Friend request flow with accept/decline and a friends list.
 - Feed and profile pages that show recent activity with title posters when available.
 - Profile editing for display name and bio.
+- Admin moderation UI at `/admin` for removing logs, ratings, reviews, and deactivating users.
 
 ## Stack
 
@@ -74,6 +75,7 @@ Backend:
 ```bash
 npm run migrate   # Create/update PostgreSQL schema
 npm run seed      # Idempotently insert title seed data
+npm run seed:demo # Idempotently insert demo Member/Admin accounts
 npm run dev       # Start API with nodemon
 npm start         # Start API normally
 npm run lint      # Run backend ESLint
@@ -98,6 +100,7 @@ Auth:
 | POST | `/api/auth/register` | Create user |
 | POST | `/api/auth/login` | Create session |
 | POST | `/api/auth/logout` | Destroy session |
+| GET | `/api/auth/me` | Current session user |
 | GET | `/api/protected` | Session smoke test |
 | GET | `/api/admin` | Admin smoke test |
 
@@ -137,7 +140,10 @@ Moderation:
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
+| GET | `/api/admin/moderation/activity` | List recent site activity for admins |
+| GET | `/api/admin/moderation/users` | List users for admins |
 | DELETE | `/api/admin/moderation/reviews/:id` | Remove a review |
+| DELETE | `/api/admin/moderation/ratings/:id` | Remove a rating |
 | DELETE | `/api/admin/moderation/logs/:id` | Remove a log |
 | PATCH | `/api/admin/moderation/users/:id/deactivate` | Deactivate a user |
 
@@ -154,7 +160,8 @@ Moderation:
 9. Log in as the receiving user, accept the request, and confirm both users appear in friends lists.
 10. Create activity as either user and confirm it appears in `/feed`.
 11. Open `/profile`, update display name and bio, refresh, and confirm they persist.
-12. Log out and confirm protected pages redirect or return 401.
+12. Run `npm run seed:demo`, log in as `admin@hottake.app`, open `/admin`, and confirm moderation controls are visible.
+13. Log out and confirm protected pages redirect or return 401.
 
 ## Render Deployment
 

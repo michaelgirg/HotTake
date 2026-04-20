@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AppNav from '../components/AppNav';
 import TitlePoster from '../components/TitlePoster';
@@ -14,21 +14,34 @@ export default function ProfilePage() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
-  const loadProfile = async () => {
+  const loadProfile = useCallback(async () => {
     const data = await get(isMe ? '/api/profile/me' : `/api/profile/${id}`);
     setProfile(data);
     setForm({
       displayName: data.user.display_name || '',
       bio: data.user.bio || '',
     });
-  };
+  }, [id, isMe]);
 
   useEffect(() => {
-    loadProfile().catch((err) => {
-      if (err.status === 401) navigate('/login');
-      else setError(err.message);
-    });
-  }, [id, isMe, navigate]);
+    let ignore = false;
+
+    async function loadInitialProfile() {
+      try {
+        await loadProfile();
+      } catch (err) {
+        if (ignore) return;
+        if (err.status === 401) navigate('/login');
+        else setError(err.message);
+      }
+    }
+
+    loadInitialProfile();
+
+    return () => {
+      ignore = true;
+    };
+  }, [loadProfile, navigate]);
 
   const saveProfile = async (event) => {
     event.preventDefault();

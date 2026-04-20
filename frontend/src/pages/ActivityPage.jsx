@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppNav from '../components/AppNav';
 import TitlePoster from '../components/TitlePoster';
@@ -17,17 +17,30 @@ export default function ActivityPage() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
-  const loadMine = async () => {
+  const loadMine = useCallback(async () => {
     const data = await get('/api/activity/mine');
     setActivity(data);
-  };
+  }, []);
 
   useEffect(() => {
-    loadMine().catch((err) => {
-      if (err.status === 401) navigate('/login');
-      else setError(err.message);
-    });
-  }, [navigate]);
+    let ignore = false;
+
+    async function loadInitialActivity() {
+      try {
+        await loadMine();
+      } catch (err) {
+        if (ignore) return;
+        if (err.status === 401) navigate('/login');
+        else setError(err.message);
+      }
+    }
+
+    loadInitialActivity();
+
+    return () => {
+      ignore = true;
+    };
+  }, [loadMine, navigate]);
 
   const searchTitles = async (event) => {
     event.preventDefault();

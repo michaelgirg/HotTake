@@ -7,6 +7,7 @@
     "dev": "nodemon server.js",
     "migrate": "node db/migrate.js",
     "seed": "node db/seed.js",
+    "seed:demo": "node db/demoAccounts.js",
     "lint": "eslint .",
     "format": "prettier --write ."
   },

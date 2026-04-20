@@ -99,6 +99,29 @@ input:focus, select:focus, textarea:focus {
   color: #f5f2ed;
 }
 
+.btn-danger {
+  min-height: 42px;
+  border: 1px solid #5a2e32;
+  border-radius: 8px;
+  background: #321b20;
+  color: #ffb0aa;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 10px 16px;
+}
+
+.btn-danger:hover {
+  border-color: #ff6f6f;
+  color: #ffd4d1;
+}
+
+.btn-danger:disabled {
+  border-color: #3a3740;
+  background: #252329;
+  color: #8d8790;
+  cursor: not-allowed;
+}
+
 .text-button {
   border: 0;
   background: transparent;
@@ -375,14 +398,34 @@ input:focus, select:focus, textarea:focus {
   gap: 10px;
 }
 
+.admin-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.55fr);
+}
+
+.admin-card-body {
+  min-width: 0;
+  flex: 1;
+}
+
+.admin-user-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
 @media (max-width: 760px) {
   .app-nav, .inline-form {
     align-items: stretch;
     flex-direction: column;
   }
 
-  .two-column, .search-layout {
+  .two-column, .search-layout, .admin-layout {
     grid-template-columns: 1fr;
+  }
+
+  .media-card, .admin-user-card {
+    flex-wrap: wrap;
   }
 
   .external-card {

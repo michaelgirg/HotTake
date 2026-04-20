@@ -6,6 +6,7 @@ import ActivityPage from './pages/ActivityPage';
 import FriendsPage from './pages/FriendsPage';
 import FeedPage from './pages/FeedPage';
 import ProfilePage from './pages/ProfilePage';
+import AdminPage from './pages/AdminPage';
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
       <Route path="/feed" element={<FeedPage />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/profile/:id" element={<ProfilePage />} />
+      <Route path="/admin" element={<AdminPage />} />
     </Routes>
   );
 }
