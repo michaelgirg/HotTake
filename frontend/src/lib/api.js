@@ -1,4 +1,19 @@
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+const LOCAL_API_BASE_URL = 'http://localhost:3001';
+const RENDER_API_BASE_URL = 'https://hottake-8bpp.onrender.com';
+
+function resolveApiBaseUrl() {
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+
+  if (typeof window !== 'undefined' && window.location.hostname.endsWith('onrender.com')) {
+    return RENDER_API_BASE_URL;
+  }
+
+  return LOCAL_API_BASE_URL;
+}
+
+export const API_BASE_URL = resolveApiBaseUrl();
 
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {

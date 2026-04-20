@@ -12,7 +12,11 @@ const { pool } = require('./db/database');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
+const defaultAllowedOrigins = [
+    'http://localhost:5173',
+    'https://hottake-47tp.onrender.com'
+];
+const allowedOrigins = (process.env.CLIENT_URL || defaultAllowedOrigins.join(','))
     .split(',')
     .map((origin) => origin.trim());
 
