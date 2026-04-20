@@ -20,7 +20,7 @@ router.get('/', requireAuth, async (req, res, next) => {
                 l.user_id,
                 l.title_id,
                 l.status AS body,
-                NULL::integer AS rating,
+                NULL::numeric AS rating,
                 l.updated_at AS created_at
               FROM logs l
               WHERE l.user_id IN (SELECT id FROM visible_users)
@@ -42,7 +42,7 @@ router.get('/', requireAuth, async (req, res, next) => {
                 rv.user_id,
                 rv.title_id,
                 rv.content AS body,
-                NULL::integer AS rating,
+                NULL::numeric AS rating,
                 rv.updated_at AS created_at
               FROM reviews rv
               WHERE rv.user_id IN (SELECT id FROM visible_users)
@@ -59,8 +59,10 @@ router.get('/', requireAuth, async (req, res, next) => {
               t.id AS title_id,
               t.name AS title_name,
               t.type,
+              t.format,
               t.genre,
-              t.release_year
+              t.release_year,
+              t.image_url
             FROM feed_items fi
             JOIN users u ON u.id = fi.user_id
             JOIN titles t ON t.id = fi.title_id

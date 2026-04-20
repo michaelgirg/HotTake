@@ -24,8 +24,10 @@ async function loadProfile(userId, viewerId) {
           t.id AS title_id,
           t.name,
           t.type,
+          t.format,
           t.genre,
           t.release_year,
+          t.image_url,
           r.rating,
           rv.content AS review,
           rv.updated_at AS reviewed_at
