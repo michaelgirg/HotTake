@@ -62,7 +62,7 @@ export default function FriendsPage() {
         <section>
           <div className="page-heading">
             <h1>Friends</h1>
-            <p>Add classmates and see their activity in your feed.</p>
+            <p>Add friends and see their activity in your feed.</p>
           </div>
           <form className="inline-form" onSubmit={sendRequest}>
             <input

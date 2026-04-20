@@ -15,12 +15,31 @@ CREATE TABLE IF NOT EXISTS titles (
   id BIGSERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   type TEXT NOT NULL CHECK (type IN ('Anime', 'Manga', 'Movie', 'TV')),
+  format TEXT,
   genre TEXT NOT NULL,
   release_year INTEGER NOT NULL,
   description TEXT DEFAULT '',
+  image_url TEXT,
+  synopsis TEXT,
+  external_source TEXT,
+  external_id TEXT,
+  score NUMERIC(4, 2),
+  episodes INTEGER,
+  airing_status TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE (name, type, release_year)
 );
+
+ALTER TABLE titles ADD COLUMN IF NOT EXISTS format TEXT;
+ALTER TABLE titles ADD COLUMN IF NOT EXISTS image_url TEXT;
+ALTER TABLE titles ADD COLUMN IF NOT EXISTS synopsis TEXT;
+ALTER TABLE titles ADD COLUMN IF NOT EXISTS external_source TEXT;
+ALTER TABLE titles ADD COLUMN IF NOT EXISTS external_id TEXT;
+ALTER TABLE titles ADD COLUMN IF NOT EXISTS score NUMERIC(4, 2);
+ALTER TABLE titles ADD COLUMN IF NOT EXISTS episodes INTEGER;
+ALTER TABLE titles ADD COLUMN IF NOT EXISTS airing_status TEXT;
+ALTER TABLE titles ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
 
 CREATE TABLE IF NOT EXISTS logs (
   id BIGSERIAL PRIMARY KEY,
@@ -36,11 +55,13 @@ CREATE TABLE IF NOT EXISTS ratings (
   id BIGSERIAL PRIMARY KEY,
   user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   title_id BIGINT NOT NULL REFERENCES titles(id) ON DELETE CASCADE,
-  rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 10),
+  rating NUMERIC(3, 1) NOT NULL CHECK (rating BETWEEN 1 AND 10),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE (user_id, title_id)
 );
+
+ALTER TABLE ratings ALTER COLUMN rating TYPE NUMERIC(3, 1) USING rating::numeric(3, 1);
 
 CREATE TABLE IF NOT EXISTS reviews (
   id BIGSERIAL PRIMARY KEY,
@@ -74,6 +95,7 @@ CREATE TABLE IF NOT EXISTS friendships (
 );
 
 CREATE INDEX IF NOT EXISTS idx_titles_search ON titles USING gin (to_tsvector('simple', name || ' ' || genre || ' ' || type));
+CREATE UNIQUE INDEX IF NOT EXISTS idx_titles_external_source_id ON titles (external_source, external_id) WHERE external_source IS NOT NULL AND external_id IS NOT NULL;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username_lower ON users (lower(username));
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email_lower ON users (lower(email));
 CREATE INDEX IF NOT EXISTS idx_logs_user_recent ON logs (user_id, updated_at DESC);

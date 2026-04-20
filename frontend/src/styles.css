@@ -99,6 +99,19 @@ input:focus, select:focus, textarea:focus {
   color: #f5f2ed;
 }
 
+.text-button {
+  border: 0;
+  background: transparent;
+  color: #ff805d;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 0;
+}
+
+.text-button:hover {
+  text-decoration: underline;
+}
+
 .fit {
   width: auto;
   flex: 0 0 auto;
@@ -209,6 +222,7 @@ input:focus, select:focus, textarea:focus {
 
 .result-item, .list-button {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
   padding: 13px 14px;
@@ -225,12 +239,111 @@ input:focus, select:focus, textarea:focus {
   border-color: #ff805d;
 }
 
+.with-poster {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+}
+
+.list-button {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+}
+
 .result-type, .detail-label {
   color: #aaa3ad;
 }
 
 .title-detail, .panel-form, .activity-card {
   padding: 18px;
+}
+
+.title-poster {
+  display: block;
+  flex: 0 0 auto;
+  object-fit: cover;
+  border: 1px solid #34303a;
+  background: #24212a;
+}
+
+.title-poster.small {
+  width: 48px;
+  height: 64px;
+  border-radius: 6px;
+}
+
+.title-poster.medium {
+  width: 72px;
+  height: 96px;
+  border-radius: 8px;
+}
+
+.title-poster.large {
+  width: 92px;
+  height: 124px;
+  border-radius: 8px;
+}
+
+.title-poster.detail {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  max-height: 360px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.poster-fallback {
+  display: grid;
+  place-items: center;
+  color: #ff805d;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.external-grid {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.external-card {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 14px;
+  border: 1px solid #2d2b33;
+  border-radius: 8px;
+  background: #18181e;
+  padding: 14px;
+}
+
+.external-card h3 {
+  margin: 0 0 6px;
+}
+
+.external-card p {
+  margin: 0 0 10px;
+}
+
+.section-title {
+  margin: 18px 0 10px;
+  color: #f5f2ed;
+}
+
+.line-clamp {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.detail-copy {
+  line-height: 1.45;
+  margin-top: 14px;
+}
+
+.media-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
 }
 
 .detail-row {
@@ -270,6 +383,15 @@ input:focus, select:focus, textarea:focus {
 
   .two-column, .search-layout {
     grid-template-columns: 1fr;
+  }
+
+  .external-card {
+    grid-template-columns: 76px minmax(0, 1fr);
+  }
+
+  .title-poster.large {
+    width: 76px;
+    height: 104px;
   }
 
   .title-detail {

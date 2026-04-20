@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppNav from '../components/AppNav';
+import TitlePoster from '../components/TitlePoster';
 import { get, post } from '../lib/api';
+import { formatRating, formatStatus } from '../lib/format';
 
 const STATUSES = ['planning', 'watching', 'reading', 'completed', 'paused', 'dropped'];
 
@@ -41,6 +43,24 @@ export default function ActivityPage() {
     }
   };
 
+  const chooseTitle = async (title) => {
+    setSelectedTitle(title);
+    setError('');
+    setMessage('');
+
+    try {
+      const data = await get(`/api/activity/titles/${title.id}`);
+      setForm({
+        status: data.status || 'watching',
+        rating: data.rating ? String(data.rating) : '',
+        review: data.review || '',
+      });
+    } catch (err) {
+      if (err.status === 401) navigate('/login');
+      else setError(err.message || 'Could not load saved activity.');
+    }
+  };
+
   const submitActivity = async (event) => {
     event.preventDefault();
     setError('');
@@ -72,11 +92,20 @@ export default function ActivityPage() {
       }
 
       setMessage('Activity saved.');
-      setForm({ status: 'watching', rating: '', review: '' });
       await loadMine();
     } catch (err) {
       setError(err.message || 'Could not save activity.');
     }
+  };
+
+  const editActivity = async (item) => {
+    setQuery(item.name);
+    setResults((current) => {
+      const exists = current.some((title) => title.id === item.title_id);
+      return exists ? current : [{ ...item, id: item.title_id }, ...current];
+    });
+    await chooseTitle({ ...item, id: item.title_id });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -107,15 +136,17 @@ export default function ActivityPage() {
                 className={`list-button ${selectedTitle?.id === title.id ? 'active' : ''}`}
                 key={title.id}
                 type="button"
-                onClick={() => setSelectedTitle(title)}
+                onClick={() => chooseTitle(title)}
               >
+                <TitlePoster title={title} size="small" />
                 <span>{title.name}</span>
-                <small>{title.type}</small>
+                <small>{title.format || title.type}</small>
               </button>
             ))}
           </div>
 
           <form className="panel-form" onSubmit={submitActivity}>
+            {selectedTitle && <TitlePoster title={selectedTitle} size="detail" />}
             <h2>{selectedTitle ? selectedTitle.name : 'Choose a title'}</h2>
             <label>
               Status
@@ -125,7 +156,7 @@ export default function ActivityPage() {
               >
                 {STATUSES.map((status) => (
                   <option key={status} value={status}>
-                    {status}
+                    {formatStatus(status)}
                   </option>
                 ))}
               </select>
@@ -136,6 +167,7 @@ export default function ActivityPage() {
                 type="number"
                 min="1"
                 max="10"
+                step="0.1"
                 placeholder="1-10"
                 value={form.rating}
                 onChange={(event) => setForm({ ...form, rating: event.target.value })}
@@ -164,12 +196,18 @@ export default function ActivityPage() {
           </div>
           <div className="activity-list">
             {activity.map((item) => (
-              <article className="activity-card" key={item.log_id}>
-                <h2>{item.name}</h2>
-                <p>
-                  {item.status} {item.rating ? `- ${item.rating}/10` : ''}
-                </p>
-                {item.review && <p className="muted">"{item.review}"</p>}
+              <article className="activity-card media-card" key={item.log_id}>
+                <TitlePoster title={item} size="small" />
+                <div>
+                  <h2>{item.name}</h2>
+                  <p>
+                    {formatStatus(item.status)} {item.rating ? `- ${formatRating(item.rating)}/10` : ''}
+                  </p>
+                  {item.review && <p className="muted">"{item.review}"</p>}
+                  <button className="text-button" type="button" onClick={() => editActivity(item)}>
+                    Edit review
+                  </button>
+                </div>
               </article>
             ))}
           </div>

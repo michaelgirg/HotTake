@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AppNav from '../components/AppNav';
+import TitlePoster from '../components/TitlePoster';
 import { get, patch } from '../lib/api';
+import { formatRating, formatStatus } from '../lib/format';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -87,12 +89,15 @@ export default function ProfilePage() {
           </div>
           <div className="activity-list">
             {profile?.activity.map((item) => (
-              <article className="activity-card" key={item.log_id}>
-                <h2>{item.name}</h2>
-                <p>
-                  {item.status} {item.rating ? `- ${item.rating}/10` : ''}
-                </p>
-                {item.review && <p className="muted">"{item.review}"</p>}
+              <article className="activity-card media-card" key={item.log_id}>
+                <TitlePoster title={item} size="small" />
+                <div>
+                  <h2>{item.name}</h2>
+                  <p>
+                    {formatStatus(item.status)} {item.rating ? `- ${formatRating(item.rating)}/10` : ''}
+                  </p>
+                  {item.review && <p className="muted">"{item.review}"</p>}
+                </div>
               </article>
             ))}
             {profile?.activity.length === 0 && <p className="status-text">No visible activity yet.</p>}

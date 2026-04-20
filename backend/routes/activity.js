@@ -47,12 +47,16 @@ router.post('/ratings', requireAuth, async (req, res, next) => {
     const { titleId, rating } = req.body;
     const numericRating = Number(rating);
 
-    if (!titleId || !Number.isInteger(numericRating)) {
-        return res.status(400).json({ error: 'titleId and an integer rating are required.' });
+    if (!titleId || !Number.isFinite(numericRating)) {
+        return res.status(400).json({ error: 'titleId and a numeric rating are required.' });
     }
 
     if (numericRating < 1 || numericRating > 10) {
         return res.status(400).json({ error: 'Rating must be between 1 and 10.' });
+    }
+
+    if (!Number.isInteger(numericRating * 10)) {
+        return res.status(400).json({ error: 'Rating can only use one decimal place.' });
     }
 
     try {
@@ -145,8 +149,10 @@ router.get('/mine', requireAuth, async (req, res, next) => {
               t.id AS title_id,
               t.name,
               t.type,
+              t.format,
               t.genre,
               t.release_year,
+              t.image_url,
               r.rating,
               rv.id AS review_id,
               rv.content AS review
@@ -162,6 +168,43 @@ router.get('/mine', requireAuth, async (req, res, next) => {
         );
 
         return res.json(rows);
+    } catch (err) {
+        return next(err);
+    }
+});
+
+router.get('/titles/:titleId', requireAuth, async (req, res, next) => {
+    try {
+        const { rows } = await db.query(
+            `
+            SELECT
+              l.id AS log_id,
+              l.status,
+              l.updated_at AS logged_at,
+              t.id AS title_id,
+              t.name,
+              t.type,
+              t.format,
+              t.genre,
+              t.release_year,
+              t.image_url,
+              r.rating,
+              rv.id AS review_id,
+              rv.content AS review
+            FROM titles t
+            LEFT JOIN logs l ON l.title_id = t.id AND l.user_id = $1
+            LEFT JOIN ratings r ON r.title_id = t.id AND r.user_id = $1
+            LEFT JOIN reviews rv ON rv.title_id = t.id AND rv.user_id = $1
+            WHERE t.id = $2
+            `,
+            [req.user.id, req.params.titleId]
+        );
+
+        if (!rows[0]) {
+            return res.status(404).json({ error: 'Title not found.' });
+        }
+
+        return res.json(rows[0]);
     } catch (err) {
         return next(err);
     }
