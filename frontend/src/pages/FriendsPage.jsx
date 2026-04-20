@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AppNav from '../components/AppNav';
 import { get, post } from '../lib/api';
@@ -11,21 +11,34 @@ export default function FriendsPage() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
-  const loadFriends = async () => {
+  const loadFriends = useCallback(async () => {
     const [friendData, requestData] = await Promise.all([
       get('/api/friends'),
       get('/api/friends/requests'),
     ]);
     setFriends(friendData);
     setRequests(requestData);
-  };
+  }, []);
 
   useEffect(() => {
-    loadFriends().catch((err) => {
-      if (err.status === 401) navigate('/login');
-      else setError(err.message);
-    });
-  }, [navigate]);
+    let ignore = false;
+
+    async function loadInitialFriends() {
+      try {
+        await loadFriends();
+      } catch (err) {
+        if (ignore) return;
+        if (err.status === 401) navigate('/login');
+        else setError(err.message);
+      }
+    }
+
+    loadInitialFriends();
+
+    return () => {
+      ignore = true;
+    };
+  }, [loadFriends, navigate]);
 
   const sendRequest = async (event) => {
     event.preventDefault();

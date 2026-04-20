@@ -57,6 +57,21 @@ router.post('/register', async (req, res, next) => {
 
 const passport = require('../config/passport');
 
+router.get('/me', (req, res) => {
+    if (!req.isAuthenticated()) {
+        return res.status(401).json({ error: 'Authentication required.' });
+    }
+
+    return res.json({
+        id: req.user.id,
+        username: req.user.username,
+        email: req.user.email,
+        role: req.user.role,
+        display_name: req.user.display_name,
+        bio: req.user.bio
+    });
+});
+
 // POST /api/auth/login
 router.post('/login', (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
