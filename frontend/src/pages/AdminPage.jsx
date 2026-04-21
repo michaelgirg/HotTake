@@ -124,7 +124,7 @@ export default function AdminPage() {
                       onClick={() => removeItem(item)}
                       disabled={busyKey === key}
                     >
-                      {actionLabel(item)}
+                      {actionLabel(item.kind)}
                     </button>
                   </article>
                 );
